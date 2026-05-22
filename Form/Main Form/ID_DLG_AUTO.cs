@@ -537,7 +537,7 @@ namespace MLCCInspectionMC
                 _trayImages[trayIndex] = new ItemDisplayData
                 {
                     Cam0Image = img0,
-                    //Cam1Image = img1
+                    Cam1Image = img1
                 };
                 Bitmap display0 = img0 != null ? new Bitmap(img0) : null;
                 Bitmap display1 = img1 != null ? new Bitmap(img1) : null;

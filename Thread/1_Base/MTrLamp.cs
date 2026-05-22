@@ -60,7 +60,7 @@ namespace MLCCInspectionMC
         }
         public bool IsWaitInput()
         {
-            return (!m_bIsWorkingTrayTransfer && !m_bIsWorkingLoader && !m_bIsWorkingInLift && !m_bIsWorkingOutLift);
+            return false;
         }
         /// <summary>
         /// Set lamp state and log

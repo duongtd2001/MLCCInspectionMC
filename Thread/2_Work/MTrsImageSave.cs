@@ -70,10 +70,17 @@ namespace MLCCInspectionMC
         }
         public void AddBMP(Bitmap bmp)
         {
-            if (bmp == null)
-                return;
-            var img = BitmapConverter.ToMat(bmp);
-            _queueSaveImage.Enqueue(img);
+            try
+            {
+                if (bmp == null)
+                    return;
+                Mat img = BitmapConverter.ToMat(bmp);
+                _queueSaveImage.Enqueue(img);
+            }
+            catch
+            {
+            }
+           
         }
     }
 }

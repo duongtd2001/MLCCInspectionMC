@@ -64,7 +64,7 @@ namespace MLCCInspectionMC
             m_iNextStep = 0;
             m_iCurrentStep = 0;
             m_iPreViewStep = 0;
-            CurrentTrayIndex = 0;
+            CurrentTrayIndex = -1;
             SetStep(0);
         }
         #endregion
@@ -217,7 +217,7 @@ namespace MLCCInspectionMC
                     Thread.Sleep(50);
                     _camera[0].Trigger();
                     _camera[1].Trigger();
-                    if (_camera[0].m_bitmap != null && _camera[0].m_bitmap != null)
+                    if (_camera[0].m_bitmap != null && _camera[1].m_bitmap != null)
                     {
                         lock (m_lock)
                         {
@@ -225,14 +225,14 @@ namespace MLCCInspectionMC
                             Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
                             m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp });
                             m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp1 });
+                            //try
+                            //{
+                            //    m_pImgSave.AddBMP(clonedBmp);
+                            //}
+                            //catch
+                            //{
+                            //}
                         }
-                        //try
-                        //{
-                        //    m_pImgSave.AddBMP(clonedBmp);
-                        //}
-                        //catch
-                        //{
-                        //}
                     }
                     else
                     {
