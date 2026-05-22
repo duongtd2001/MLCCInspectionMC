@@ -26,17 +26,17 @@ namespace MLCCInspectionMC
 
         public void ThreadJob()
         {
-            while (true)
-            {
-                Thread.Sleep(100);
-                try
-                {
-                    dorunStep();
-                }
-                catch
-                {
-                }
-            }
+            //while (true)
+            //{
+            //    Thread.Sleep(25);
+            //    try
+            //    {
+            //        dorunStep();
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
         }
         private void dorunStep()
         {
@@ -44,12 +44,14 @@ namespace MLCCInspectionMC
             if (m_bCallVision[idx])
             {
                 m_bCallVision[idx] = false;
-                _camera[idx].Trigger();
+                swGrabImg.Restart();
+                _camera[idx].StartGrab();
                 int currentIdx = MSystem.CurrentTrayIndex;
                 if (_camera[idx].m_bitmap != null)
                 {
                     Bitmap clonedBmp = (Bitmap)_camera[idx].m_bitmap.Clone();
                     m_qImage[idx].Enqueue(new ImageData { TrayIndex = currentIdx, Image = clonedBmp });
+                    //m_pImgSave.AddBMP(clonedBmp);
                 }
                 else
                 {

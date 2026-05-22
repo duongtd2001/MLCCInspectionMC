@@ -20,7 +20,16 @@ namespace MLCCInspectionMC
 
         private void FormClose(object sender, FormClosedEventArgs e)
         {
-
+            _updateStep = new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(100);
+                    IDC_LOADER_STEP.Text = MSystem.m_pTrsTransferXY.GetStep().ToString();
+                }
+            });
+            _updateStep.IsBackground = true;
+            _updateStep.Start();
         }
 
         

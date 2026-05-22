@@ -164,7 +164,6 @@ namespace MLCCInspectionMC
             }
         }
 
-
         public void sendEvent(int index, bool isItemOK, Bitmap img1, Bitmap img2)
         {
             OnItemInspected?.Invoke(index, isItemOK, img1, img2);

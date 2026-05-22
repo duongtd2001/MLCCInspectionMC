@@ -14,6 +14,8 @@ namespace MLCCInspectionMC
         private int JogMode = 0;
         private Button bt_Pos;
         private int bt_idx = -1;
+        private int idx_mapping = 0;
+
 
 
         public FormTeachArrPos()
@@ -156,12 +158,17 @@ namespace MLCCInspectionMC
         {
             InforTeaching.Instance.TrayColumns = Convert.ToInt16(numericCols.Value);
             InforTeaching.Instance.TrayRows = Convert.ToInt16(numericRow.Value);
+            MSystem.ArrayPos = new double[InforTeaching.Instance.TrayRows, InforTeaching.Instance.TrayColumns];
             GeneralArray();
             InforTeaching.Instance.SaveSettings();
         }
 
         public void GeneralArray()
         {
+            if (MSystem.MyMsgMemo($"Do you want General Array Position?", "Question", msgButton.YESNO, msgIcon.Question) != DialogResult.Yes)
+            {
+                return;
+            }
             if (InforTeaching.Instance.m_dTechPos_StartXY == null)
             {
                 MSystem.MyMsgMemo($"Starting point not yet teaching", "Error", msgButton.OK, msgIcon.Error);
@@ -172,14 +179,73 @@ namespace MLCCInspectionMC
                 MSystem.MyMsgMemo($"Starting point not yet teaching", "Error", msgButton.OK, msgIcon.Error);
                 return;
             }
-            for (int i = 0; i < MSystem.m_btPoselect.Length; i++)
+            idx_mapping = 0;
+            //for (int i = 0; i < InforTeaching.Instance.TrayRows; i++)
+            //{
+            //    if(i % 2 == 0)
+            //    {
+            //        for (int j = 0; j < InforTeaching.Instance.TrayColumns; j++)
+            //        {
+            //            InforTeaching.Instance.m_dPos[idx_mapping] =
+            //            (CalculatorPosX(Convert.ToInt32(MSystem.m_btPoselect[j].Text) - 1),
+            //             CalculatorPosY(Convert.ToInt32(MSystem.m_btPoselect[i].Text) - 1));
+            //            idx_mapping++;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (int k = InforTeaching.Instance.TrayColumns - 1; k >= 0; k--)
+            //        {
+            //            InforTeaching.Instance.m_dPos[idx_mapping] =
+            //            (CalculatorPosX(Convert.ToInt32(MSystem.m_btPoselect[k].Text) - 1),
+            //             CalculatorPosY(Convert.ToInt32(MSystem.m_btPoselect[i].Text) - 1));
+            //            idx_mapping++;
+            //        }
+            //    }
+
+            //}
+            for (int row = 0; row < InforTeaching.Instance.TrayRows; row++)
             {
-                InforTeaching.Instance.m_dPos[bt_idx] =
-                    (MSystem.m_pTrsTransferXY.CalculatorPosX(Convert.ToInt32(MSystem.m_btPoselect[i].Text) - 1),
-                     MSystem.m_pTrsTransferXY.CalculatorPosY(Convert.ToInt32(MSystem.m_btPoselect[i].Text) - 1));
+                if (row % 2 == 0)
+                {
+                    for (int col = 0; col < InforTeaching.Instance.TrayColumns; col++)
+                    {
+                        InforTeaching.Instance.m_dPos[idx_mapping] =
+                        (
+                            CalculatorPosX(col),
+                            CalculatorPosY(row)
+                        );
+
+                        idx_mapping++;
+                    }
+                }
+                else
+                {
+                    for (int col = InforTeaching.Instance.TrayColumns - 1; col >= 0; col--)
+                    {
+                        InforTeaching.Instance.m_dPos[idx_mapping] =
+                        (
+                            CalculatorPosX(col),
+                            CalculatorPosY(row)
+                        );
+
+                        idx_mapping++;
+                    }
+                }
             }
         }
-
+        public double CalculatorPosY(int idx)
+        {
+            double dY = InforTeaching.Instance.m_dTechPos_StartXY[1] - idx * ((InforTeaching.Instance.m_dTechPos_StartXY[1] -
+               InforTeaching.Instance.m_dTechPos_EndXY[1]) / (InforTeaching.Instance.TrayRows - 1));
+            return dY;
+        }
+        public double CalculatorPosX(int idx)
+        {
+            double dX = InforTeaching.Instance.m_dTechPos_StartXY[0] + idx * ((InforTeaching.Instance.m_dTechPos_EndXY[0] -
+                InforTeaching.Instance.m_dTechPos_StartXY[0]) / (InforTeaching.Instance.TrayColumns - 1));
+            return dX;
+        }
         private void JogActive(object sender, MouseEventArgs e)
         {
             switch ((sender as Button).Name.ToString())
@@ -406,7 +472,7 @@ namespace MLCCInspectionMC
             });
             Task.Run(() =>
             {
-                MSystem.m_pTrsTransferXY.MovePosition(Axis.AXIS_X, InforTeaching.Instance.m_dTechPos_In_Out_Tray[1]);
+                MSystem.m_pTrsTransferXY.MovePosition(Axis.AXIS_Y, InforTeaching.Instance.m_dTechPos_In_Out_Tray[1]);
             });
         }
 
@@ -419,6 +485,7 @@ namespace MLCCInspectionMC
 
         private void axBtnGrabImage1_ClickEvent(object sender, EventArgs e)
         {
+            PictureCamera1.Image = null;
             MSystem._camera[0].Trigger();
             Bitmap bmp = PictureCamera1.Image as Bitmap;
             PictureCamera1.Image = MSystem._camera[0].m_bitmap;
@@ -441,6 +508,7 @@ namespace MLCCInspectionMC
 
         private void axBtnGrabImage2_ClickEvent(object sender, EventArgs e)
         {
+            PictureCamera2.Image = null;
             MSystem._camera[1].Trigger();
             Bitmap bmp = PictureCamera2.Image as Bitmap;
             PictureCamera2.Image = MSystem._camera[1].m_bitmap;
@@ -481,6 +549,16 @@ namespace MLCCInspectionMC
             {
                 bmp.Dispose();
             }
+        }
+
+        private void axBtnCheckCam1_ClickEvent(object sender, EventArgs e)
+        {
+
+        }
+
+        private void axBtnCheckCam2_ClickEvent(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -93,17 +93,17 @@ namespace MLCCInspectionMC
         #region Main Run
         public void ThreadJob()
         {
-            while (true)
-            {
-                System.Threading.Thread.Sleep(10);
-                try
-                {
-                    dorunStep();
-                }
-                catch (Exception ex)
-                {
-                }
-            }
+            //while (true)
+            //{
+            //    System.Threading.Thread.Sleep(10);
+            //    try
+            //    {
+            //        dorunStep();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //    }
+            //}
         }
        
         public void dorunStep()

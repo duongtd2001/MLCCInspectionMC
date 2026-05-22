@@ -19,17 +19,17 @@ namespace MLCCInspectionMC
 
         public void ThreadJob()
         {
-            while (true)
-            {
-                Thread.Sleep(5);
-                try
-                {
-                    dorunStep();
-                }
-                catch
-                {
-                }
-            }
+            //while (true)
+            //{
+            //    Thread.Sleep(5);
+            //    try
+            //    {
+            //        dorunStep();
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
         }
         double Curr = 0;
         bool bPos = false;

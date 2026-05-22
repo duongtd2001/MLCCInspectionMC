@@ -3,6 +3,7 @@ using MLCCInspectionMC.Device.Camera;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -41,6 +42,10 @@ namespace MLCCInspectionMC
         public int index_X = 0;
         public int index_Y = 0;
         public int index_SW_Start = 0;
+        public int IndexRun = 0;
+
+        public static Stopwatch swGrabImg = new Stopwatch();
+        public static Stopwatch swVisionDetect = new Stopwatch();
 
         public static long _daily_ProductPass = 0;
         public static long _daily_ProductNG = 0;
@@ -81,6 +86,7 @@ namespace MLCCInspectionMC
         public static MTrsTrigger m_pTrsTrigger = new MTrsTrigger();
         public static MTrsVision[] m_pTrsVision = { new MTrsVision(eLEFT), new MTrsVision(eBOTTOM) };
         //public static MTrsVision m_pTrsVision = new MTrsVision(eLEFT);
+        public static double[,] ArrayPos;
 
         public static YoloManager m_pYoloManager = new YoloManager(modelpath);
 

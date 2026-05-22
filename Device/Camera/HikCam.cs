@@ -17,328 +17,6 @@ namespace MLCCInspectionMC.Device.Camera
 {
     public class HikCam
     {
-        //[DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
-        //public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
-
-        //MyCamera.MV_CC_DEVICE_INFO_LIST m_stDeviceList = new MyCamera.MV_CC_DEVICE_INFO_LIST();
-        //private MyCamera m_MyCamera = new MyCamera();
-        //bool m_bGrabbing = false;
-        //Thread m_hReceiveThread = null;
-        //MyCamera.MV_FRAME_OUT_INFO_EX m_stFrameInfo = new MyCamera.MV_FRAME_OUT_INFO_EX();
-
-        //UInt32 m_nBufSizeForDriver = 0;
-        //IntPtr m_BufForDriver = IntPtr.Zero;
-        //private static Object BufForDriverLock = new Object();
-
-        //public List<string> LstCameraHik = new List<string>();
-        //public BitmapSource bitmapSource;
-        //public Bitmap _bmp;
-
-        //public Stopwatch sw = new Stopwatch();
-
-        //public HikCam(string DefineName)
-        //{
-        //    DeviceListAcq(DefineName);
-        //    OpenDevice(DefineName);
-
-        //}
-
-        //public void DestroyCamera()
-        //{
-        //    if (IsConnect())
-        //    {
-        //        StopGrab();
-        //        m_MyCamera.MV_CC_CloseDevice_NET();
-        //        m_MyCamera.MV_CC_DestroyDevice_NET();
-        //    }
-        //}
-
-        //public List<string> DeviceListAcq(string DefineName)
-        //{
-        //    LstCameraHik.Clear();
-        //    m_stDeviceList.nDeviceNum = 0;
-        //    int nRet = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE | MyCamera.MV_USB_DEVICE, ref m_stDeviceList);
-        //    for (int i = 0; i < m_stDeviceList.nDeviceNum; i++)
-        //    {
-        //        MyCamera.MV_CC_DEVICE_INFO device = (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(m_stDeviceList.pDeviceInfo[i], typeof(MyCamera.MV_CC_DEVICE_INFO));
-        //        if (device.nTLayerType == MyCamera.MV_GIGE_DEVICE)
-        //        {
-        //            MyCamera.MV_GIGE_DEVICE_INFO gigeInfo = (MyCamera.MV_GIGE_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stGigEInfo, typeof(MyCamera.MV_GIGE_DEVICE_INFO));
-
-        //            if (gigeInfo.chUserDefinedName != "")
-        //            {
-        //                LstCameraHik.Add(gigeInfo.chUserDefinedName);
-        //            }
-        //        }
-        //        else if (device.nTLayerType == MyCamera.MV_USB_DEVICE)
-        //        {
-        //            MyCamera.MV_USB3_DEVICE_INFO usbInfo = (MyCamera.MV_USB3_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stUsb3VInfo, typeof(MyCamera.MV_USB3_DEVICE_INFO));
-        //            if (usbInfo.chUserDefinedName != "")
-        //            {
-        //                LstCameraHik.Add("U3V: " + usbInfo.chUserDefinedName + " (" + usbInfo.chSerialNumber + ")");
-        //            }
-        //            else
-        //            {
-        //                LstCameraHik.Add("U3V: " + usbInfo.chManufacturerName + " " + usbInfo.chModelName + " (" + usbInfo.chSerialNumber + ")");
-        //            }
-        //        }
-        //    }
-        //    return LstCameraHik;
-        //}
-
-        //public void OpenDevice(string DefineName)
-        //{
-        //    try
-        //    {
-        //        int idx = LstCameraHik.IndexOf(DefineName);
-        //        MyCamera.MV_CC_DEVICE_INFO device =
-        //        (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(m_stDeviceList.pDeviceInfo[idx], typeof(MyCamera.MV_CC_DEVICE_INFO));
-
-        //        if (null == m_MyCamera)
-        //        {
-        //            m_MyCamera = new MyCamera();
-        //            if (null == m_MyCamera)
-        //            {
-        //                return;
-        //            }
-        //        }
-
-        //        int nRet = m_MyCamera.MV_CC_CreateDevice_NET(ref device);
-        //        if (MyCamera.MV_OK != nRet)
-        //        {
-        //            return;
-        //        }
-
-        //        nRet = m_MyCamera.MV_CC_OpenDevice_NET();
-        //        if (MyCamera.MV_OK != nRet)
-        //        {
-        //            m_MyCamera.MV_CC_DestroyDevice_NET();
-        //            return;
-        //        }
-
-        //        if (device.nTLayerType == MyCamera.MV_GIGE_DEVICE)
-        //        {
-        //            int nPacketSize = m_MyCamera.MV_CC_GetOptimalPacketSize_NET();
-        //            if (nPacketSize > 0)
-        //            {
-        //                nRet = m_MyCamera.MV_CC_SetIntValue_NET("GevSCPSPacketSize", (uint)nPacketSize);
-        //            }
-        //            else
-        //            {
-        //            }
-        //        }
-        //        m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
-        //        m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
-        //        TriggerMode();
-        //        StartGrabbing();
-        //    }
-        //    catch
-        //    {
-        //        MessageBox.Show("Open Camera Failed!");
-        //    }
-        //}
-
-        //public void StopGrab()
-        //{
-        //    if (IsConnect())
-        //    {
-        //        m_bGrabbing = false;
-        //        m_hReceiveThread.Join();
-        //        int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();
-        //    }
-        //}
-
-        //public bool IsConnect()
-        //{
-        //    return m_MyCamera.MV_CC_IsDeviceConnected_NET();
-        //}
-
-        //public void SetPixelFormat(uint pixelFormat)
-        //{
-        //    if (!IsConnect()) return;
-        //    int nRet = m_MyCamera.MV_CC_SetEnumValue_NET("PixelFormat", pixelFormat);
-        //}
-
-        //public void SetDefaultParams()
-        //{
-        //    if (!IsConnect()) return;
-        //    int nRet = m_MyCamera.MV_CC_SetEnumValue_NET("UserSetSelector", 0);
-        //    if (nRet != MyCamera.MV_OK)
-        //    {
-        //        ShowErrorMsg("User Set Selector Fail!", nRet);
-        //    }
-
-        //    nRet = m_MyCamera.MV_CC_SetCommandValue_NET("UserSetLoad");
-        //    if (nRet != MyCamera.MV_OK)
-        //    {
-        //        ShowErrorMsg("User Set Load Fail!", nRet);
-        //    }
-        //}
-
-        //public void ShowErrorMsg(string strMsg, int nErrorNum)
-        //{
-        //    MessageBox.Show(strMsg + " ErrorCode: " + Convert.ToString(nErrorNum));
-        //}
-
-        //public void TriggerMode()
-        //{
-        //    m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_ON);
-        //    m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_SOFTWARE);
-        //}
-
-        //public void GrabImage()
-        //{
-        //    sw.Reset();
-        //    sw.Start();
-        //    if (!m_bGrabbing)
-        //    {
-        //        TriggerMode();
-        //        StartGrabbing();
-        //    }
-        //    int nRet = m_MyCamera.MV_CC_SetCommandValue_NET("TriggerSoftware");
-        //}
-
-        //public void StartGrabbing()
-        //{
-        //    m_bGrabbing = true;
-
-        //    m_hReceiveThread = new Thread(ReceiveThreadProcess);
-        //    m_hReceiveThread.Start();
-
-        //    m_stFrameInfo.nFrameLen = 0;
-        //    m_stFrameInfo.enPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_Undefined;
-
-        //    int nRet = m_MyCamera.MV_CC_StartGrabbing_NET();
-        //    if (MyCamera.MV_OK != nRet)
-        //    {
-        //        m_bGrabbing = false;
-        //        m_hReceiveThread.Join();
-        //        return;
-        //    }
-        //}
-
-        //public void ReceiveThreadProcess()
-        //{
-        //    MyCamera.MV_FRAME_OUT stFrameInfo = new MyCamera.MV_FRAME_OUT();
-        //    MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
-        //    int nRet = MyCamera.MV_OK;
-
-        //    while (m_bGrabbing)
-        //    {
-        //        try
-        //        {
-        //            Bitmap bmp = null;
-        //            nRet = m_MyCamera.MV_CC_GetImageBuffer_NET(ref stFrameInfo, 1000);
-        //            if (nRet == MyCamera.MV_OK)
-        //            {
-        //                lock (BufForDriverLock)
-        //                {
-        //                    if (m_BufForDriver == IntPtr.Zero || stFrameInfo.stFrameInfo.nFrameLen > m_nBufSizeForDriver)
-        //                    {
-        //                        if (m_BufForDriver != IntPtr.Zero)
-        //                        {
-        //                            Marshal.Release(m_BufForDriver);
-        //                            m_BufForDriver = IntPtr.Zero;
-        //                        }
-
-        //                        m_BufForDriver = Marshal.AllocHGlobal((Int32)stFrameInfo.stFrameInfo.nFrameLen);
-        //                        if (m_BufForDriver == IntPtr.Zero)
-        //                        {
-        //                            return;
-        //                        }
-        //                        m_nBufSizeForDriver = stFrameInfo.stFrameInfo.nFrameLen;
-        //                    }
-
-        //                    m_stFrameInfo = stFrameInfo.stFrameInfo;
-        //                    CopyMemory(m_BufForDriver, stFrameInfo.pBufAddr, stFrameInfo.stFrameInfo.nFrameLen);
-        //                }
-
-        //                if (RemoveCustomPixelFormats(stFrameInfo.stFrameInfo.enPixelType))
-        //                {
-        //                    m_MyCamera.MV_CC_FreeImageBuffer_NET(ref stFrameInfo);
-        //                    continue;
-        //                }
-        //                stDisplayInfo.pData = stFrameInfo.pBufAddr;
-        //                stDisplayInfo.nDataLen = stFrameInfo.stFrameInfo.nFrameLen;
-        //                stDisplayInfo.nWidth = stFrameInfo.stFrameInfo.nWidth;
-        //                stDisplayInfo.nHeight = stFrameInfo.stFrameInfo.nHeight;
-        //                stDisplayInfo.enPixelType = stFrameInfo.stFrameInfo.enPixelType;
-        //                bmp = ConvertBufferToBitmap(stDisplayInfo.pData, stDisplayInfo.nWidth, stDisplayInfo.nHeight, stDisplayInfo.enPixelType);
-        //                if(bmp != null)
-        //                {
-        //                    _bmp = bmp;
-        //                }
-        //                m_MyCamera.MV_CC_FreeImageBuffer_NET(ref stFrameInfo);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            //ErrorLog.errorLog.Enqueue($"HikCamera ReceiveThreadProcess Exception: {ex.ToString()}");
-        //        }
-        //    }
-        //}
-
-        //public static Bitmap ConvertBufferToBitmap(IntPtr pData, int width, int height, MyCamera.MvGvspPixelType pixelType)
-        //{
-        //    if (pData == IntPtr.Zero)
-        //        throw new ArgumentNullException(nameof(pData));
-
-        //    Bitmap bitmap;
-
-        //    if (pixelType == MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono8)
-        //    {
-        //        int stride = ((width + 3) / 4) * 4;
-
-        //        bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-
-        //        var bmpData = bitmap.LockBits(
-        //            new Rectangle(0, 0, width, height),
-        //            System.Drawing.Imaging.ImageLockMode.WriteOnly,
-        //            bitmap.PixelFormat);
-
-        //        for (int y = 0; y < height; y++)
-        //        {
-        //            byte[] buffer = new byte[width];
-        //            IntPtr src = IntPtr.Add(pData, y * width);
-        //            Marshal.Copy(src, buffer, 0, width);
-
-        //            IntPtr dst = IntPtr.Add(bmpData.Scan0, y * bmpData.Stride);
-        //            Marshal.Copy(buffer, 0, dst, width);
-        //        }
-
-        //        bitmap.UnlockBits(bmpData);
-
-        //        var palette = bitmap.Palette;
-        //        for (int i = 0; i < 256; i++)
-        //            palette.Entries[i] = System.Drawing.Color.FromArgb(i, i, i);
-        //        bitmap.Palette = palette;
-        //    }
-        //    else if (pixelType == MyCamera.MvGvspPixelType.PixelType_Gvsp_BGR8_Packed)
-        //    {
-        //        int stride = width * 3;
-        //        bitmap = new Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, pData);
-        //    }
-        //    else
-        //    {
-        //        throw new NotSupportedException($"Pixel format {pixelType} not supported.");
-        //    }
-
-        //    return bitmap;
-        //}
-
-        //private bool RemoveCustomPixelFormats(MyCamera.MvGvspPixelType enPixelFormat)
-        //{
-        //    Int32 nResult = ((int)enPixelFormat) & (unchecked((Int32)0x80000000));
-        //    if (0x80000000 == nResult)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
         [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
         private static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
         public const Int32 CUSTOMER_PIXEL_FORMAT = unchecked((Int32)0x80000000);
@@ -517,7 +195,7 @@ namespace MLCCInspectionMC.Device.Camera
             }
 
             m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
-            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_ON);
         }
 
         public void ContinuesMode()
@@ -540,6 +218,7 @@ namespace MLCCInspectionMC.Device.Camera
 
             while (m_bGrabbing)
             {
+                GC.Collect();
                 nRet = m_MyCamera.MV_CC_GetImageBuffer_NET(ref stFrameInfo, 1000);
                 if (nRet == MyCamera.MV_OK)
                 {
@@ -594,7 +273,8 @@ namespace MLCCInspectionMC.Device.Camera
                     stDisplayInfo.nHeight = stFrameInfo.stFrameInfo.nHeight;
                     stDisplayInfo.enPixelType = stFrameInfo.stFrameInfo.enPixelType;
                     m_MyCamera.MV_CC_DisplayOneFrame_NET(ref stDisplayInfo);
-
+                    MSystem.swGrabImg.Stop();
+                    MSystem.MyMessagerBottom(MSystem.swGrabImg.ElapsedMilliseconds.ToString("F3"));
                     m_MyCamera.MV_CC_FreeImageBuffer_NET(ref stFrameInfo);
                 }
             }
@@ -724,7 +404,7 @@ namespace MLCCInspectionMC.Device.Camera
             if (MyCamera.MV_OK != nRet)
             {
                 m_bGrabbing = false;
-                m_hReceiveThread.Join();
+                m_hReceiveThread.Join(500);
                 return;
             }
         }

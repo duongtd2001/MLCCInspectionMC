@@ -42,6 +42,8 @@ namespace MLCCInspectionMC
 
             MSystem.RunAllThread();
 
+            MSystem.ArrayPos = new double[InforTeaching.Instance.TrayRows, InforTeaching.Instance.TrayColumns];
+
             if(MSystem.SIMULATION)
                 MessageBox.Show("RUN SIMULATION","Start Program",MessageBoxButtons.OK,MessageBoxIcon.Warning);
             /******************************************/

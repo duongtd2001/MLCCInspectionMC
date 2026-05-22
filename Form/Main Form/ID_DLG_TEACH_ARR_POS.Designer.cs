@@ -83,6 +83,8 @@ namespace MLCCInspectionMC
             this.tbPanelArray = new System.Windows.Forms.TableLayoutPanel();
             this.BT_SAVE_POS = new AxBTNENHLib4.AxBtnEnh();
             this.axBT_MOVE_POS = new AxBTNENHLib4.AxBtnEnh();
+            this.axBtnCheckCam1 = new AxBTNENHLib4.AxBtnEnh();
+            this.axBtnCheckCam2 = new AxBTNENHLib4.AxBtnEnh();
             this.groupBox_JOG.SuspendLayout();
             this.groupBox_ArrayPos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Ax_BT_GO_POS_IN_OUT)).BeginInit();
@@ -108,6 +110,8 @@ namespace MLCCInspectionMC
             this.grbArrayPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BT_SAVE_POS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axBT_MOVE_POS)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axBtnCheckCam1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axBtnCheckCam2)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_JOG
@@ -877,10 +881,30 @@ namespace MLCCInspectionMC
             this.axBT_MOVE_POS.TabIndex = 824;
             this.axBT_MOVE_POS.ClickEvent += new System.EventHandler(this.axBT_MOVE_POS_ClickEvent);
             // 
+            // axBtnCheckCam1
+            // 
+            this.axBtnCheckCam1.Location = new System.Drawing.Point(563, 338);
+            this.axBtnCheckCam1.Name = "axBtnCheckCam1";
+            this.axBtnCheckCam1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axBtnCheckCam1.OcxState")));
+            this.axBtnCheckCam1.Size = new System.Drawing.Size(88, 36);
+            this.axBtnCheckCam1.TabIndex = 825;
+            this.axBtnCheckCam1.ClickEvent += new System.EventHandler(this.axBtnCheckCam1_ClickEvent);
+            // 
+            // axBtnCheckCam2
+            // 
+            this.axBtnCheckCam2.Location = new System.Drawing.Point(939, 335);
+            this.axBtnCheckCam2.Name = "axBtnCheckCam2";
+            this.axBtnCheckCam2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axBtnCheckCam2.OcxState")));
+            this.axBtnCheckCam2.Size = new System.Drawing.Size(88, 36);
+            this.axBtnCheckCam2.TabIndex = 826;
+            this.axBtnCheckCam2.ClickEvent += new System.EventHandler(this.axBtnCheckCam2_ClickEvent);
+            // 
             // FormTeachArrPos
             // 
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1298, 800);
+            this.Controls.Add(this.axBtnCheckCam2);
+            this.Controls.Add(this.axBtnCheckCam1);
             this.Controls.Add(this.axBT_MOVE_POS);
             this.Controls.Add(this.BT_SAVE_POS);
             this.Controls.Add(this.grbArrayPosition);
@@ -921,6 +945,8 @@ namespace MLCCInspectionMC
             this.grbArrayPosition.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.BT_SAVE_POS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axBT_MOVE_POS)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axBtnCheckCam1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axBtnCheckCam2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -980,5 +1006,7 @@ namespace MLCCInspectionMC
         private System.Windows.Forms.TableLayoutPanel tbPanelArray;
         private AxBTNENHLib4.AxBtnEnh BT_SAVE_POS;
         private AxBTNENHLib4.AxBtnEnh axBT_MOVE_POS;
+        private AxBTNENHLib4.AxBtnEnh axBtnCheckCam1;
+        private AxBTNENHLib4.AxBtnEnh axBtnCheckCam2;
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,7 @@ namespace MLCCInspectionMC
         const int STEP_MOVE_Y = 3000;
         const int STEP_CHECK_READY = 110;
         const int STEP_IN_OUT_TRAY = 5000;
+        const int STEP_TRIGGER_VISION = 4000;
 
         #endregion
         /******************************************************/
@@ -57,6 +59,7 @@ namespace MLCCInspectionMC
             index_SW_Start = 0;
             index_X = 0;
             index_Y = 0;
+            IndexRun = 0;
             m_bCallVision[0] = m_bCallVision[1] = false;
             m_iNextStep = 0;
             m_iCurrentStep = 0;
@@ -108,12 +111,12 @@ namespace MLCCInspectionMC
                 }
             }
         }
+        private readonly object m_lock = new object();
        
         public void dorunStep()
         {
             if (SysStatus != StatusRun.RUN) return;
             if (ModeTrigger != ModeTrigger.Point) return;
-
             switch (m_iCurrentStep)
             {
                 case 0:
@@ -153,7 +156,7 @@ namespace MLCCInspectionMC
                     bool CheckLightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 50;
                     if (!CheckLightCurtain)
                     {
-                        MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X004)!!", "Error", msgButton.OK, msgIcon.Error);
+                        MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
                         MSystem.SysStatus = StatusRun.STOP;
                         break;
                     }
@@ -168,7 +171,7 @@ namespace MLCCInspectionMC
                     SetStep(STEP_IN_OUT_TRAY + 100);
                     break;
                 case STEP_IN_OUT_TRAY + 100:
-                    bool LightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 50;
+                    bool LightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 5;
                     if (!LightCurtain)
                     {
                         MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X004)!!", "Error", msgButton.OK, msgIcon.Error);
@@ -185,92 +188,137 @@ namespace MLCCInspectionMC
                 case STEP_MOVE_XY:
                     Task.Run(() =>
                     {
-                        MovePosition(Axis.AXIS_X, PosStartX());
+                        MoveTransferX(IndexRun);
                     });
                     Task.Run(() =>
                     {
-                        MovePosition(Axis.AXIS_Y, PosStartY());
+                        MoveTransferY(IndexRun);
                     });
                     SetStep(STEP_MOVE_XY + 100);
                     break;
                 
                 case STEP_MOVE_XY + 100:
-                    if (!IsMoveComplete(Axis.AXIS_X, CalculatorPosX(index_X)) || !IsMoveComplete(Axis.AXIS_Y, CalculatorPosY(index_Y)))
+                    if (!IsMoveComplete(Axis.AXIS_X, CalculatorPosX(IndexRun)) || !IsMoveComplete(Axis.AXIS_Y, CalculatorPosY(IndexRun)))
                     {
                         break;
-                    } 
-                    SetStep(STEP_MOVE_X);
-                    break;
-                case STEP_MOVE_X:
-                    MoveTransferX(index_X);
-                    SetStep(STEP_MOVE_X + 100);
-                    break;
-                case STEP_MOVE_X + 100:
-                    if (!IsMoveComplete(Axis.AXIS_X, CalculatorPosX(index_X)))
-                    {
-                        SetStep(STEP_MOVE_X);
-                        MyMessagerBottom("Move set step X");
-                        break;
-                    } 
+                    }
                     
-                    if (index_Y % 2 == 0)
-                    {
-                        MyMessagerBottom($"Move step X: {index_X}");
-                        index_X++;
-                        if (index_X == InforTeaching.Instance.TrayColumns)
-                        {
-                            index_Y++;
-                            SetStep(STEP_MOVE_Y);
-                            MyMessagerBottom("Move set step Y");
-                            index_X = InforTeaching.Instance.TrayColumns - 1;
-                        }
-                        else
-                        {
-                            m_bCallVision[0] = true;
-                            m_bCallVision[1] = true;
-                            Thread.Sleep(200);
-                            SetStep(STEP_MOVE_X);
-                        } 
-                    }
-                    else
-                    {
-                        MyMessagerBottom($"Move step X: {index_X}");
-                        index_X--;
-                        if (index_X < 0)
-                        {
-                            index_Y++;
-                            SetStep(STEP_MOVE_Y);
-                            index_X = 0;
-                        }
-                        else
-                        {
-                            m_bCallVision[0] = true;
-                            m_bCallVision[1] = true;
-                            Thread.Sleep(200);
-                            SetStep(STEP_MOVE_X);
-                        }
-                    }
+                    SetStep(STEP_TRIGGER_VISION);
                     break;
-
-                case STEP_MOVE_Y:
-                    if (index_Y < InforTeaching.Instance.TrayRows)
-                    {
-                        MoveTransferY(index_Y);
-                        MyMessagerBottom($"Move step Y: {index_Y}");
-                        SetStep(STEP_MOVE_Y + 100);
-                    }
-                    else
+                case STEP_TRIGGER_VISION:
+                    m_bCallVision[0] = true;
+                    m_bCallVision[1] = true;
+                    IndexRun++;
+                    if((IndexRun + 1) == InforTeaching.Instance.m_dPos.Count)
                     {
                         SetStep(STEP_WAIT);
+                        break;
                     }
-                        break;
-                case STEP_MOVE_Y + 100:
-                    if (!IsMoveComplete(Axis.AXIS_Y, CalculatorPosY(index_Y)))
+                    Thread.Sleep(50);
+                    _camera[0].Trigger();
+                    _camera[1].Trigger();
+                    if (_camera[0].m_bitmap != null && _camera[0].m_bitmap != null)
                     {
-                        break;
-                    }  
-                    SetStep(STEP_MOVE_X);
+                        lock (m_lock)
+                        {
+                            Bitmap clonedBmp = (Bitmap)_camera[0].m_bitmap.Clone();
+                            Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
+                            m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp });
+                            m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp1 });
+                        }
+                        //try
+                        //{
+                        //    m_pImgSave.AddBMP(clonedBmp);
+                        //}
+                        //catch
+                        //{
+                        //}
+                    }
+                    else
+                    {
+                        m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
+                        m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
+                    }
+                    SetStep(STEP_MOVE_XY);
                     break;
+                //case STEP_MOVE_X:
+                //    MoveTransferX(IndexRun);
+                //    SetStep(STEP_MOVE_X + 100);
+                //    break;
+                //case STEP_MOVE_X + 100:
+                //    if (!IsMoveComplete(Axis.AXIS_X, CalculatorPosX(IndexRun)))
+                //    {
+                //        SetStep(STEP_MOVE_X);
+                //        MyMessagerBottom("Move set step X");
+                //        break;
+                //    } 
+                    
+                //    IndexRun++;
+                //    m_bCallVision[0] = true;
+                //    m_bCallVision[1] = true;
+                //    Thread.Sleep(200);
+                //    SetStep(STEP_MOVE_XY);
+
+
+
+                    //if (index_Y % 2 == 0)
+                    //{
+                    //    MyMessagerBottom($"Move step X: {IndexRun}");
+                    //    index_X++;
+                    //    if (index_X == InforTeaching.Instance.TrayColumns)
+                    //    {
+                    //        index_Y++;
+                    //        SetStep(STEP_MOVE_Y);
+                    //        MyMessagerBottom("Move set step Y");
+                    //        index_X = InforTeaching.Instance.TrayColumns - 1;
+                    //    }
+                    //    else
+                    //    {
+                    //        m_bCallVision[0] = true;
+                    //        m_bCallVision[1] = true;
+                    //        Thread.Sleep(200);
+                    //        SetStep(STEP_MOVE_X);
+                    //    } 
+                    //}
+                    //else
+                    //{
+                    //    MyMessagerBottom($"Move step X: {index_X}");
+                    //    index_X--;
+                    //    if (index_X < 0)
+                    //    {
+                    //        index_Y++;
+                    //        SetStep(STEP_MOVE_Y);
+                    //        index_X = 0;
+                    //    }
+                    //    else
+                    //    {
+                    //        m_bCallVision[0] = true;
+                    //        m_bCallVision[1] = true;
+                    //        Thread.Sleep(200);
+                    //        SetStep(STEP_MOVE_X);
+                    //    }
+                    //}
+                    //break;
+
+                //case STEP_MOVE_Y:
+                //    if (index_Y < InforTeaching.Instance.TrayRows)
+                //    {
+                //        MoveTransferY(index_Y);
+                //        MyMessagerBottom($"Move step Y: {index_Y}");
+                //        SetStep(STEP_MOVE_Y + 100);
+                //    }
+                //    else
+                //    {
+                //        SetStep(STEP_WAIT);
+                //    }
+                //        break;
+                //case STEP_MOVE_Y + 100:
+                //    if (!IsMoveComplete(Axis.AXIS_Y, CalculatorPosY(index_Y)))
+                //    {
+                //        break;
+                //    }  
+                //    SetStep(STEP_MOVE_X);
+                //    break;
                 case STEP_CHECK_READY:
                     m_bReady = true;
                     m_pLightControl.SetLightOff(0);
@@ -323,7 +371,7 @@ namespace MLCCInspectionMC
         {
             //double dY = InforTeaching.Instance.m_dTechPos_StartXY[1] - idx * ((InforTeaching.Instance.m_dTechPos_StartXY[1] -
             //   InforTeaching.Instance.m_dTechPos_EndXY[1]) / (InforTeaching.Instance.TrayRows - 1));
-            double dY = InforTeaching.Instance.m_dPos[idx].X;
+            double dY = InforTeaching.Instance.m_dPos[idx].Y;
             return dY;
         }
         // move all point
