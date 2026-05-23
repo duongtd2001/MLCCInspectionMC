@@ -127,6 +127,9 @@ namespace MLCCInspectionMC
                     InitData();
                     if (!m_bReady)
                     {
+                        m_iTimer.PauseTimer();
+                        UpdateTactime();
+
                         SetStep(STEP_CHECK_READY);
                     }
                     else
@@ -140,6 +143,8 @@ namespace MLCCInspectionMC
                         index_SW_Start++;
                         if (index_SW_Start > 10)
                         {
+                            m_iTimer.ResetTimer();
+                            m_iTimer.StartTimer();
                             MSystem.AutoForm.ResetTrayMap();
                             m_pLightControl.SetLightOn(0, InforTeaching.Instance.m_iLight[0]);
                             m_pLightControl.SetLightOn(1, InforTeaching.Instance.m_iLight[1]);

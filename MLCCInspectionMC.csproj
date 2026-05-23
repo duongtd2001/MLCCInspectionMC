@@ -387,7 +387,6 @@
     <Compile Include="Thread\1_Base\MTrsAutoManager.cs" />
     <Compile Include="Thread\1_Base\MTrsOP.cs" />
     <Compile Include="Thread\2_Work\MTrsImageSave.cs" />
-    <Compile Include="Thread\2_Work\MTrsTransferPoint.cs" />
     <Compile Include="Thread\2_Work\MTrsTransferXY.cs" />
     <Compile Include="Thread\2_Work\MTrsTransFlying.cs" />
     <Compile Include="Thread\2_Work\MTrsTrigger.cs" />
