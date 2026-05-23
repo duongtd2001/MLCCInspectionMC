@@ -146,8 +146,8 @@ namespace MLCCInspectionMC
                             m_iTimer.ResetTimer();
                             m_iTimer.StartTimer();
                             MSystem.AutoForm.ResetTrayMap();
-                            m_pLightControl.SetLightOn(0, InforTeaching.Instance.m_iLight[0]);
-                            m_pLightControl.SetLightOn(1, InforTeaching.Instance.m_iLight[1]);
+                            //m_pLightControl.SetLightOn(0, InforTeaching.Instance.m_iLight[0]);
+                            //m_pLightControl.SetLightOn(1, InforTeaching.Instance.m_iLight[1]);
                             Thread.Sleep(50);
                             SetStep(STEP_MOVE_XY);
                         }
@@ -326,8 +326,8 @@ namespace MLCCInspectionMC
                 //    break;
                 case STEP_CHECK_READY:
                     m_bReady = true;
-                    m_pLightControl.SetLightOff(0);
-                    m_pLightControl.SetLightOff(1);
+                    //m_pLightControl.SetLightOff(0);
+                    //m_pLightControl.SetLightOff(1);
                     SetStep(STEP_WAIT);
                     break;
             }
