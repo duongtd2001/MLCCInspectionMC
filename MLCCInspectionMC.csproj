@@ -389,7 +389,7 @@
     <Compile Include="Thread\2_Work\MTrsImageSave.cs" />
     <Compile Include="Thread\2_Work\MTrsTransferXY.cs" />
     <Compile Include="Thread\2_Work\MTrsTransFlying.cs" />
-    <Compile Include="Thread\2_Work\MTrsTrigger.cs" />
+    <Compile Include="Thread\2_Work\MTrsLightCurTain.cs" />
     <Compile Include="Thread\2_Work\MTrsVision.cs" />
     <Compile Include="Thread\2_Work\MTrsYoloManager.cs" />
     <Compile Include="Thread\2_Work\YoloInferenceOpenVino.cs" />

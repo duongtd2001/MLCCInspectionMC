@@ -160,13 +160,14 @@ namespace MLCCInspectionMC
                     }
                     break;
                 case STEP_IN_OUT_TRAY:
-                    bool CheckLightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 5;
-                    if (!CheckLightCurtain)
-                    {
-                        MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
-                        MSystem.SysStatus = StatusRun.STOP;
-                        break;
-                    }
+                    //bool CheckLightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 5;
+                    //if (!CheckLightCurtain)
+                    //{
+                    //    MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
+                    //    MSystem.SysStatus = StatusRun.STOP;
+                    //    break;
+                    //}
+                    
                     Task.Run(() =>
                     {
                         MovePosition(Axis.AXIS_X, InforTeaching.Instance.m_dTechPos_In_Out_Tray[0]);
@@ -178,13 +179,6 @@ namespace MLCCInspectionMC
                     SetStep(STEP_IN_OUT_TRAY + 100);
                     break;
                 case STEP_IN_OUT_TRAY + 100:
-                    bool LightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 5;
-                    if (!LightCurtain)
-                    {
-                        MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X004)!!", "Error", msgButton.OK, msgIcon.Error);
-                        MSystem.SysStatus = StatusRun.STOP;
-                        break;
-                    }
                     if (!IsMoveComplete(Axis.AXIS_X, InforTeaching.Instance.m_dTechPos_In_Out_Tray[0]) || 
                         !IsMoveComplete(Axis.AXIS_Y, InforTeaching.Instance.m_dTechPos_In_Out_Tray[1]))
                     {
@@ -215,21 +209,11 @@ namespace MLCCInspectionMC
                 case STEP_TRIGGER_VISION:
                     m_bCallVision[0] = true;
                     m_bCallVision[1] = true;
-                    //IndexRun++;
-
-
-
-                    //if ((CurrentTrayIndex + 1) == InforTeaching.Instance.m_dPos.Count)
-                    //{
-                    //    SetStep(STEP_WAIT);
-                    //    break;
-                    //}
-
-                    Thread.Sleep(150);
+                   
+                    Thread.Sleep(50);
                     _camera[0].Trigger();
                     _camera[1].Trigger();
-
-                    Thread.Sleep(100);
+                    Thread.Sleep(80);
                     if (_camera[0].m_bitmap != null && _camera[1].m_bitmap != null)
                     {
                         lock (m_lock)
@@ -239,66 +223,13 @@ namespace MLCCInspectionMC
 
                             m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp });
                             m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp1 });
-
-                            //m_qImage[0].Enqueue(new ImageData { TrayIndex = CurrentTrayIndex, Image = clonedBmp });
-                            //m_qImage[1].Enqueue(new ImageData { TrayIndex = CurrentTrayIndex, Image = clonedBmp1 });
-                           // var test = CurrentTrayIndex;
-
-
-
-                            // YOLO processing for both images
-                            //try
-                            //{
-                            //    // Run YOLO inference on camera 0
-                            //    using (Mat mat0 = BitmapConverter.ToMat(clonedBmp))
-                            //    {
-                            //        var results0 = m_pYoloManager.CheckImageDetails(clonedBmp);
-
-                            //        // Run YOLO inference on camera 1
-                            //        var results1 = m_pYoloManager.CheckImageDetails(clonedBmp1);
-
-                            //        // Determine if item is OK (both cameras detect capacitor)
-                            //        bool isCam0_OK = results0 != null && results0.Count > 0;
-                            //        bool isCam1_OK = results1 != null && results1.Count > 0;
-                            //        bool isItemOK = isCam0_OK && isCam1_OK;
-
-                            //        // Draw detection results on images
-                            //        Bitmap drawn0 = m_pYoloManager.DrawResults(clonedBmp, results0, isItemOK);
-                            //        Bitmap drawn1 = m_pYoloManager.DrawResults(clonedBmp1, results1, isItemOK);
-
-                            //        // Invoke event with inspection results
-                            //        m_pYoloManager.sendEvent(IndexRun, isItemOK, drawn0, drawn1);
-                            //    }
-                            //}
-                            //catch (Exception ex)
-                            //{
-                            //    MSystem.MyMsgMemo($"YOLO Processing Error: {ex.Message}", "Error", msgButton.OK, msgIcon.Error);
-                            //}
-
-
-
-
-
-                            //try
-                            //{
-                            //    m_pImgSave.AddBMP(clonedBmp);
-                            //}
-                            //catch
-                            //{
-                            //}
                         }
                     }
                     else
                     {
                         m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
                         m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
-
-
-                        //m_qImage[0].Enqueue(new ImageData { TrayIndex = CurrentTrayIndex, Image = null });
-                        //m_qImage[1].Enqueue(new ImageData { TrayIndex = CurrentTrayIndex, Image = null });
                     }
-                    //CurrentTrayIndex++;
-
                     IndexRun++;
 
                     if ((IndexRun + 1) == InforTeaching.Instance.m_dPos.Count)

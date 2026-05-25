@@ -83,7 +83,7 @@ namespace MLCCInspectionMC
         public static MTrsTransFlying m_pTrsTransFlying = new MTrsTransFlying();
         public static Button[] m_btPoselect;
 
-        public static MTrsTrigger m_pTrsTrigger = new MTrsTrigger();
+        public static MTrsLightCurTain m_pTrsTrigger = new MTrsLightCurTain();
         public static MTrsVision[] m_pTrsVision = { new MTrsVision(eLEFT), new MTrsVision(eBOTTOM) };
         //public static MTrsVision m_pTrsVision = new MTrsVision(eLEFT);
         public static double[,] ArrayPos;
