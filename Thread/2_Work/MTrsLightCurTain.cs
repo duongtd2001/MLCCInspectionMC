@@ -40,16 +40,19 @@ namespace MLCCInspectionMC
         {
             if (SysStatus != StatusRun.RUN) return;
             Curr = MSystem.m_pTrsTransferXY.GetCurrentPos(Axis.AXIS_X);
-            bPosX = Curr - InforTeaching.Instance.m_dTechPos_In_Out_Tray[0] < 10;
             bPosY = Curr - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 10;
             if(!m_pTrsTransferXY.IsLightCurtainDetect())
             {
-                if (!bPosX || !bPosY)
+                if (!bPosY)
                 {
+                    MSystem.SetAllStop();
                     MSystem.SysStatus = StatusRun.STOP;
                     MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
                 }
             }
         }
+
+
     }
 }
+
