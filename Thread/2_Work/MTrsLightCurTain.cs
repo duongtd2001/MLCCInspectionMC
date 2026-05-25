@@ -46,8 +46,8 @@ namespace MLCCInspectionMC
             {
                 if (!bPosX || !bPosY)
                 {
-                    MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X004)!!", "Error", msgButton.OK, msgIcon.Error);
                     MSystem.SysStatus = StatusRun.STOP;
+                    MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
                 }
             }
         }
