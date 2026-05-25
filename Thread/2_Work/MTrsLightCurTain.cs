@@ -39,11 +39,11 @@ namespace MLCCInspectionMC
         private void dorunStep()
         {
             if (SysStatus != StatusRun.RUN) return;
-            Curr = MSystem.m_pTrsTransferXY.GetCurrentPos(Axis.AXIS_X);
-            bPosY = Curr - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 10;
-            if(!m_pTrsTransferXY.IsLightCurtainDetect())
+            Curr = MSystem.m_pTrsTransferXY.GetCurrentPos(Axis.AXIS_Y);
+            bPosY = InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] - Curr < 140;
+            if (!m_pTrsTransferXY.IsLightCurtainDetect())
             {
-                if (!bPosY)
+                if (bPosY)
                 {
                     MSystem.SetAllStop();
                     MSystem.SysStatus = StatusRun.STOP;

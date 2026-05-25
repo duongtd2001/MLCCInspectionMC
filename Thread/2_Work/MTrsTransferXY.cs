@@ -182,6 +182,7 @@ namespace MLCCInspectionMC
                     if (!IsMoveComplete(Axis.AXIS_X, InforTeaching.Instance.m_dTechPos_In_Out_Tray[0]) || 
                         !IsMoveComplete(Axis.AXIS_Y, InforTeaching.Instance.m_dTechPos_In_Out_Tray[1]))
                     {
+                        SetStep(STEP_IN_OUT_TRAY);
                         break;
                     }
                     SetStep(STEP_WAIT + 100);
@@ -201,6 +202,7 @@ namespace MLCCInspectionMC
                 case STEP_MOVE_XY + 100:
                     if (!IsMoveComplete(Axis.AXIS_X, CalculatorPosX(IndexRun)) || !IsMoveComplete(Axis.AXIS_Y, CalculatorPosY(IndexRun)))
                     {
+                        SetStep(STEP_MOVE_XY);
                         break;
                     }
                     
