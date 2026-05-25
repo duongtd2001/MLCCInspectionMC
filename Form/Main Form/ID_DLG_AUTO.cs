@@ -555,7 +555,7 @@ namespace MLCCInspectionMC
                 //displayNumberMap[i] = displayNumber;
                 btn.Click += (s, e) =>
                 {
-                    var data = _trayImages[displayNumber-1];
+                    var data = _trayImages[displayNumber - 1];
 
                     if (data != null)
                     {

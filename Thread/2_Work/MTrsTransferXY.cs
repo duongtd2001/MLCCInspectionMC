@@ -160,7 +160,7 @@ namespace MLCCInspectionMC
                     }
                     break;
                 case STEP_IN_OUT_TRAY:
-                    bool CheckLightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 50;
+                    bool CheckLightCurtain = Math.Abs(GetCurrentPos(Axis.AXIS_Y)) - InforTeaching.Instance.m_dTechPos_In_Out_Tray[1] < 5;
                     if (!CheckLightCurtain)
                     {
                         MSystem.MyMsgMemo("LIGHT CURTAIN DETECT!! (X005)!!", "Error", msgButton.OK, msgIcon.Error);
