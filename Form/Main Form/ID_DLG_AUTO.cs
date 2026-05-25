@@ -18,7 +18,7 @@ namespace MLCCInspectionMC
         public Color _clOFF = Color.Gainsboro;
         public Color _CheckOK = Color.Gainsboro;
         public Color _CheckNG = Color.Red;
-
+        private int[] displayNumberMap;
         #region //Timer Update Status
         //System.Windows.Forms.Timer TimUpdate = new System.Windows.Forms.Timer();
         Thread TimUpdate;//= new Thread(new ThreadStart(UpDateData));
@@ -512,11 +512,9 @@ namespace MLCCInspectionMC
             //        }
             //    };
 
-            
+
             for (int i = 0; i < totaltraymap; i++)
             {
-                int uiIndex = GetTrayUiIndex(i);
-
                 Button btn = new Button();
 
                 int row = i / cols;
@@ -536,14 +534,15 @@ namespace MLCCInspectionMC
                 }
 
                 btn.Text = displayNumber.ToString();
-
+                btn.Tag = displayNumber.ToString();
+                int uiIndex = GetTrayUiIndex(displayNumber - 1);
                 btn.BackColor = Color.Gray;
                 btn.ForeColor = Color.White;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.Margin = new Padding(0);
 
-                int uiRow = uiIndex / rows;
-                int uiCol = uiIndex % cols;
+                int uiRow = i / rows;
+                int uiCol = i % cols;
 
                 btn.Size = new Size(cellWidth, cellHeight);
 
@@ -552,11 +551,11 @@ namespace MLCCInspectionMC
                     safeArea.Y + padding + uiRow * (cellHeight + padding)
                 );
 
-                int capturedIndex = i;
-
+                int capturedIndex = displayNumber;
+                //displayNumberMap[i] = displayNumber;
                 btn.Click += (s, e) =>
                 {
-                    var data = _trayImages[capturedIndex];
+                    var data = _trayImages[displayNumber-1];
 
                     if (data != null)
                     {
@@ -572,13 +571,15 @@ namespace MLCCInspectionMC
                 UIShortedCell[uiIndex] = btn;
             }
 
-            //groupboxtraymap.Controls.Add(btn);
-            //    UIShortedCell[uiIndex] = btn;
-            //}
-
             MSystem.m_pYoloManager.OnItemInspected -= YoloManager_OnItemInspected;
             MSystem.m_pYoloManager.OnItemInspected += YoloManager_OnItemInspected;
         }
+
+        //groupboxtraymap.Controls.Add(btn);
+        //    UIShortedCell[uiIndex] = btn;
+        //}
+
+        
 
         private void YoloManager_OnItemInspected(int trayIndex, bool isOK, Bitmap img0, Bitmap img1)
         {

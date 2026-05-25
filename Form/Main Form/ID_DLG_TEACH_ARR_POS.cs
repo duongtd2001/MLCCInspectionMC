@@ -29,7 +29,7 @@ namespace MLCCInspectionMC
             numericCols.Value = InforTeaching.Instance.TrayColumns;
         }
 
-        private void InitArrPos(int _row, int _cols)
+        private void InitArrPos_old(int _row, int _cols)
         {
             row = _row;
             col = _cols;
@@ -74,6 +74,100 @@ namespace MLCCInspectionMC
                     index++;
                 }
             }
+        }
+        private void InitArrPos(int _row, int _cols)
+        {
+            row = _row;
+            col = _cols;
+
+            int total = _row * _cols;
+
+            MSystem.MAP_ARRAY = new int[_row, _cols];
+            MSystem.m_btPoselect = new Button[total];
+
+            tbPanelArray.SuspendLayout();
+
+            tbPanelArray.Controls.Clear();
+            tbPanelArray.RowStyles.Clear();
+            tbPanelArray.ColumnStyles.Clear();
+
+            if (_row >= 15 || _cols >= 15)
+            {
+                grbArrayPosition.Size = new Size(750, 420);
+            }
+            else if (_row >= 10 || _cols >= 10)
+            {
+                grbArrayPosition.Size = new Size(640, 420);
+            }
+            else
+            {
+                grbArrayPosition.Size = new Size(400, 400);
+            }
+
+            tbPanelArray.RowCount = _row;
+            tbPanelArray.ColumnCount = _cols;
+
+            // Add RowStyles đúng cách: chỉ add theo số row
+            for (int i = 0; i < _row; i++)
+            {
+                tbPanelArray.RowStyles.Add(
+                    new RowStyle(SizeType.Percent, 100F / _row)
+                );
+            }
+
+            // Add ColumnStyles đúng cách: chỉ add theo số col
+            for (int j = 0; j < _cols; j++)
+            {
+                tbPanelArray.ColumnStyles.Add(
+                    new ColumnStyle(SizeType.Percent, 100F / _cols)
+                );
+            }
+
+            for (int i = 0; i < total; i++)
+            {
+                int uiRow = i / _cols;
+                int uiCol = i % _cols;
+
+                int reverseRow = (_row - 1) - uiRow;
+
+                int displayNumber;
+
+                if (reverseRow % 2 == 0)
+                {
+                    displayNumber = reverseRow * _cols + (_cols - uiCol);
+                }
+                else
+                {
+                    displayNumber = reverseRow * _cols + uiCol + 1;
+                }
+
+                int arrayIndex = displayNumber - 1;
+
+                Button btn = new Button();
+
+                btn.Tag = $"BT_POS_{displayNumber}";
+                btn.Text = displayNumber.ToString();
+
+                btn.BackColor = Color.Gainsboro;
+                btn.ForeColor = Color.Black;
+                btn.FlatAppearance.BorderSize = 0;
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.Font = new Font("Microsoft Sans Serif", 13, FontStyle.Regular);
+                btn.Dock = DockStyle.Fill;
+                btn.Margin = new Padding(1);
+
+                btn.Click += BT_POS_Click;
+
+                // Lưu button theo đúng vị trí logic thật
+                MSystem.m_btPoselect[arrayIndex] = btn;
+
+                // Lưu map: vị trí UI hiện tại đang tương ứng với index logic nào
+                MSystem.MAP_ARRAY[uiRow, uiCol] = arrayIndex;
+
+                tbPanelArray.Controls.Add(btn, uiCol, uiRow);
+            }
+
+            tbPanelArray.ResumeLayout();
         }
 
         private void BT_POS_Click(object sender, EventArgs e)

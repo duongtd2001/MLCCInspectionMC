@@ -225,11 +225,11 @@ namespace MLCCInspectionMC
                     //    break;
                     //}
 
-                    Thread.Sleep(100);
+                    Thread.Sleep(150);
                     _camera[0].Trigger();
                     _camera[1].Trigger();
 
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                     if (_camera[0].m_bitmap != null && _camera[1].m_bitmap != null)
                     {
                         lock (m_lock)
