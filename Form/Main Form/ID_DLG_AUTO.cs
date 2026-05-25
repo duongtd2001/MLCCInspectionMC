@@ -477,12 +477,66 @@ namespace MLCCInspectionMC
             int cellHeight = (safeArea.Height - (InforTeaching.Instance.TrayRows + 1) * padding) / InforTeaching.Instance.TrayRows;
 
 
+            //for (int i = 0; i < totaltraymap; i++)
+            //{
+            //    int uiIndex = GetTrayUiIndex(i);
+
+            //    Button btn = new Button();
+            //    btn.Text = (i + 1).ToString();
+            //    btn.BackColor = Color.Gray;
+            //    btn.ForeColor = Color.White;
+            //    btn.FlatStyle = FlatStyle.Flat;
+            //    btn.Margin = new Padding(0);
+
+            //    int uiRow = uiIndex / rows;
+            //    int uiCol = uiIndex % cols;
+
+            //    btn.Size = new Size(cellWidth, cellHeight);
+            //    btn.Location = new Point(
+            //                safeArea.X + padding + uiCol * (cellWidth + padding),
+            //                safeArea.Y + padding + uiRow * (cellHeight + padding)
+            //            );
+
+            //    int capturedIndex = i;
+
+            //    btn.Click += (s, e) => {
+            //        var data = _trayImages[capturedIndex];
+
+            //        if (data != null)
+            //        {
+            //            Bitmap clone0 = data.Cam0Image != null ? new Bitmap(data.Cam0Image) : null;
+            //            Bitmap clone1 = data.Cam1Image != null ? new Bitmap(data.Cam1Image) : null;
+
+            //            UpdateCameraImageResult(pictureBox1, clone0);
+            //            UpdateCameraImageResult(pictureBox2, clone1);
+            //        }
+            //    };
+
+            
             for (int i = 0; i < totaltraymap; i++)
             {
                 int uiIndex = GetTrayUiIndex(i);
 
                 Button btn = new Button();
-                btn.Text = (i + 1).ToString();
+
+                int row = i / cols;
+                int col = i % cols;
+
+                int reverseRow = (rows - 1) - row;
+
+                int displayNumber;
+
+                if (reverseRow % 2 == 0)
+                {
+                    displayNumber = reverseRow * cols + (cols - col);
+                }
+                else
+                {
+                    displayNumber = reverseRow * cols + col + 1;
+                }
+
+                btn.Text = displayNumber.ToString();
+
                 btn.BackColor = Color.Gray;
                 btn.ForeColor = Color.White;
                 btn.FlatStyle = FlatStyle.Flat;
@@ -492,14 +546,16 @@ namespace MLCCInspectionMC
                 int uiCol = uiIndex % cols;
 
                 btn.Size = new Size(cellWidth, cellHeight);
+
                 btn.Location = new Point(
-                            safeArea.X + padding + uiCol * (cellWidth + padding),
-                            safeArea.Y + padding + uiRow * (cellHeight + padding)
-                        );
+                    safeArea.X + padding + uiCol * (cellWidth + padding),
+                    safeArea.Y + padding + uiRow * (cellHeight + padding)
+                );
 
                 int capturedIndex = i;
 
-                btn.Click += (s, e) => {
+                btn.Click += (s, e) =>
+                {
                     var data = _trayImages[capturedIndex];
 
                     if (data != null)
@@ -515,6 +571,10 @@ namespace MLCCInspectionMC
                 groupboxtraymap.Controls.Add(btn);
                 UIShortedCell[uiIndex] = btn;
             }
+
+            //groupboxtraymap.Controls.Add(btn);
+            //    UIShortedCell[uiIndex] = btn;
+            //}
 
             MSystem.m_pYoloManager.OnItemInspected -= YoloManager_OnItemInspected;
             MSystem.m_pYoloManager.OnItemInspected += YoloManager_OnItemInspected;
