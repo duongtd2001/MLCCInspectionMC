@@ -273,8 +273,8 @@ namespace MLCCInspectionMC.Device.Camera
                     stDisplayInfo.nHeight = stFrameInfo.stFrameInfo.nHeight;
                     stDisplayInfo.enPixelType = stFrameInfo.stFrameInfo.enPixelType;
                     m_MyCamera.MV_CC_DisplayOneFrame_NET(ref stDisplayInfo);
-                    MSystem.swGrabImg.Stop();
-                    MSystem.MyMessagerBottom(MSystem.swGrabImg.ElapsedMilliseconds.ToString("F3"));
+                    //MSystem.swGrabImg.Stop();
+                    //MSystem.MyMessagerBottom(MSystem.swGrabImg.ElapsedMilliseconds.ToString("F3"));
                     m_MyCamera.MV_CC_FreeImageBuffer_NET(ref stFrameInfo);
                 }
             }
