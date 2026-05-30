@@ -289,7 +289,7 @@
             // 
             // BtExit
             // 
-            this.BtExit.Location = new System.Drawing.Point(467, 518);
+            this.BtExit.Location = new System.Drawing.Point(474, 518);
             this.BtExit.Name = "BtExit";
             this.BtExit.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("BtExit.OcxState")));
             this.BtExit.Size = new System.Drawing.Size(173, 77);
