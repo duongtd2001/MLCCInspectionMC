@@ -366,7 +366,7 @@
             this.groupBox1.Size = new System.Drawing.Size(498, 456);
             this.groupBox1.TabIndex = 765;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Camera1";
+            this.groupBox1.Text = "Camera Y";
             // 
             // pictureBox1
             // 
@@ -388,7 +388,7 @@
             this.groupBox2.Size = new System.Drawing.Size(498, 456);
             this.groupBox2.TabIndex = 767;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Camera2";
+            this.groupBox2.Text = "Camera X";
             // 
             // pictureBox2
             // 

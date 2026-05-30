@@ -85,8 +85,11 @@ namespace MLCCInspectionMC
                             bool isCam1_OK = results1.Count > 0;
                             bool isItemOK = isCam0_OK && isCam1_OK;
 
-                            Bitmap drawn0 = DrawResults(data0.Image, results0, isItemOK);
-                            Bitmap drawn1 = DrawResults(data1.Image, results1, isItemOK);
+                            //Bitmap drawn0 = DrawResults(data0.Image, results0, isItemOK);
+                            //Bitmap drawn1 = DrawResults(data1.Image, results1, isItemOK);
+
+                            Bitmap drawn0 = DrawResults(data0.Image, results0, isCam0_OK);
+                            Bitmap drawn1 = DrawResults(data1.Image, results1, isCam1_OK);
 
                             OnItemInspected?.Invoke(itemIndex, isItemOK, drawn0, drawn1);
                         }
@@ -131,9 +134,10 @@ namespace MLCCInspectionMC
                             bool isCam1_OK = results1.Count > 0;
                             bool isItemOK = isCam0_OK && isCam1_OK;
 
-                            Bitmap drawn0 = DrawResults(data0.Image, results0, isItemOK);
-                            Bitmap drawn1 = DrawResults(data1.Image, results1, isItemOK);
-
+                            Bitmap drawn0 = DrawResults(data0.Image, results0, isCam0_OK);
+                            Bitmap drawn1 = DrawResults(data1.Image, results1, isCam1_OK);
+                            //Bitmap drawn0 = DrawResults(data0.Image, results0, isItemOK);
+                            //Bitmap drawn1 = DrawResults(data1.Image, results1, isItemOK);
                             OnItemInspected?.Invoke(itemIndex, isItemOK, drawn0, drawn1);
                         }
                         catch { }
