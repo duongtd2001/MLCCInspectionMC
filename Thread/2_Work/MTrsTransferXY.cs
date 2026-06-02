@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
 namespace MLCCInspectionMC
 {
@@ -216,12 +218,28 @@ namespace MLCCInspectionMC
                     _camera[0].Trigger();
                     _camera[1].Trigger();
                     Thread.Sleep(80);
+                    
                     if (_camera[0].m_bitmap != null && _camera[1].m_bitmap != null)
                     {
                         lock (m_lock)
                         {
-                            Bitmap clonedBmp = (Bitmap)_camera[0].m_bitmap.Clone();
-                            Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
+                            //Bitmap clonedBmp = (Bitmap)_camera[0].m_bitmap.Clone();
+                            //Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
+
+                            //Camera 1 = camera x=bottom
+                            //Camera 0 = camera y=left
+                            Bitmap clonedBmp = CropBitmap(_camera[0].m_bitmap, 100, 70, 1200, 1090);
+                            Bitmap clonedBmp1 = CropBitmap(_camera[1].m_bitmap, 50, 20, 1100, 1050);
+                            // camera 0
+                            //RECT_X1 = 150
+                            //RECT_Y1 = 200
+                            //RECT_X2 = 1000
+                            //RECT_Y2 = 1000
+                            // camera 1
+                            //RECT_X1 = 70
+                            //RECT_Y1 = 70
+                            //RECT_X2 = 900
+                            //RECT_Y2 = 1050
 
                             m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp });
                             m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = clonedBmp1 });
@@ -232,6 +250,7 @@ namespace MLCCInspectionMC
                         m_qImage[0].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
                         m_qImage[1].Enqueue(new ImageData { TrayIndex = IndexRun, Image = null });
                     }
+
                     IndexRun++;
 
                     if ((IndexRun + 1) == InforTeaching.Instance.m_dPos.Count)
@@ -328,8 +347,19 @@ namespace MLCCInspectionMC
                     break;
             }
         }
+        private Bitmap CropBitmap(Bitmap src, int x1, int y1, int x2, int y2)
+        {
+            // Giới hạn trong kích thước ảnh gốc
+            x1 = Math.Max(0, x1);
+            y1 = Math.Max(0, y1);
+            x2 = Math.Min(src.Width, x2);
+            y2 = Math.Min(src.Height, y2);
+
+            Rectangle rect = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+            return src.Clone(rect, src.PixelFormat);
+        }
         #endregion
-        
+
         #region Servo Function
         //NEW
         public void AllServoStop()

@@ -1,9 +1,13 @@
 ﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Threading;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MLCCInspectionMC
 {
@@ -66,7 +70,7 @@ namespace MLCCInspectionMC
                 {
                     bool hasImg0 = m_qImage[0].TryDequeue(out ImageData data0);
                     bool hasImg1 = m_qImage[1].TryDequeue(out ImageData data1);
-
+                    bool isSaveImg = false;
                     if (hasImg0 && hasImg1)
                     {
                         int itemIndex = data0.TrayIndex;
@@ -90,7 +94,59 @@ namespace MLCCInspectionMC
 
                             Bitmap drawn0 = DrawResults(data0.Image, results0, isCam0_OK);
                             Bitmap drawn1 = DrawResults(data1.Image, results1, isCam1_OK);
+                            // Lưu ảnh NG bất đồng bộ nếu item không đạt, tránh block luồng chính
+                            if(isSaveImg)
+                            {
+                                if (!isCam0_OK)
+                                {
+                                    int captureIndex = itemIndex;
+                                    Bitmap saveImg0 = (Bitmap)data0.Image.Clone();
+                                    Task.Run(() =>
+                                    {
+                                        try
+                                        {
+                                            string folder = @"C:\image_";
+                                            Directory.CreateDirectory(folder);
 
+                                            string path0 = Path.Combine(folder, $"Cam0_{captureIndex:D4}_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+
+                                            saveImg0.Save(path0);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine($"[SaveImage] Error: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            saveImg0.Dispose();
+                                        }
+                                    });
+                                }
+                                if (!isCam1_OK)
+                                {
+                                    int captureIndex = itemIndex;
+                                    Bitmap saveImg1 = (Bitmap)data1.Image.Clone();
+
+                                    Task.Run(() =>
+                                    {
+                                        try
+                                        {
+                                            string folder = @"C:\image_";
+                                            Directory.CreateDirectory(folder);
+                                            string path1 = Path.Combine(folder, $"Cam1_{captureIndex:D4}_{DateTime.Now:yyyyMMdd_HHmmss_fff}.bmp");
+                                            saveImg1.Save(path1);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine($"[SaveImage] Error: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            saveImg1.Dispose();
+                                        }
+                                    });
+                                }
+                            }    
                             OnItemInspected?.Invoke(itemIndex, isItemOK, drawn0, drawn1);
                         }
                         catch { }
