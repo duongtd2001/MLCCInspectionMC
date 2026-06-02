@@ -51,7 +51,7 @@ namespace MLCCInspectionMC
             _inferRequest = _compiledModel.create_infer_request();
         }
 
-        public List<Detection> RunInference(Mat mat, float confidenceThreshold = 0.5f, float nmsThreshold = 0.45f)
+        public List<Detection> RunInference(Mat mat, float confidenceThreshold = 0.5f, float nmsThreshold = 0.55f)
         {
             float[] inputData = PreprocessToArray(mat);
 
