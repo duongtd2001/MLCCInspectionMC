@@ -64,6 +64,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.groupboxtraymap = new System.Windows.Forms.GroupBox();
+            this.groupboxtraymapold = new System.Windows.Forms.GroupBox();
             this.BT_TRIGGER_POINT = new SUserControls.ColorButton();
             this.BT_TRIGGER_FLYING = new SUserControls.ColorButton();
             this.PanelAuto = new System.Windows.Forms.Panel();
@@ -411,6 +412,16 @@
             this.groupboxtraymap.TabStop = false;
             this.groupboxtraymap.Text = "Tray Map";
             // 
+            // groupboxtraymapold
+            // 
+            this.groupboxtraymapold.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupboxtraymapold.Location = new System.Drawing.Point(530, 493);
+            this.groupboxtraymapold.Name = "groupboxtraymapold";
+            this.groupboxtraymapold.Size = new System.Drawing.Size(373, 324);
+            this.groupboxtraymapold.TabIndex = 770;
+            this.groupboxtraymapold.TabStop = false;
+            this.groupboxtraymapold.Text = "Before";
+            // 
             // BT_TRIGGER_POINT
             // 
             this.BT_TRIGGER_POINT.BackColor = System.Drawing.Color.Transparent;
@@ -455,6 +466,7 @@
             // 
             this.PanelAuto.Controls.Add(this.BT_TRIGGER_FLYING);
             this.PanelAuto.Controls.Add(this.BT_TRIGGER_POINT);
+            this.PanelAuto.Controls.Add(this.groupboxtraymapold);
             this.PanelAuto.Controls.Add(this.groupboxtraymap);
             this.PanelAuto.Controls.Add(this.groupBox2);
             this.PanelAuto.Controls.Add(this.groupBox1);
@@ -558,6 +570,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.GroupBox groupboxtraymap;
+        private System.Windows.Forms.GroupBox groupboxtraymapold;
         public SUserControls.ColorButton BT_TRIGGER_POINT;
         public SUserControls.ColorButton BT_TRIGGER_FLYING;
         private System.Windows.Forms.Panel PanelAuto;
