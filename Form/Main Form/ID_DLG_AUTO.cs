@@ -305,7 +305,11 @@ namespace MLCCInspectionMC
                 return;
             }
             else
+            {
                 StartBottonOn();
+            }    
+                
+
         }
 
         private void BT_STOP_Click(object sender, EventArgs e)
@@ -457,61 +461,47 @@ namespace MLCCInspectionMC
         private int totaltraymap;
         int rows = 0;
         int cols = 0;
-        private ItemDisplayData[] _trayImages;
+        private ItemDisplayData[] _trayImages;     // current tray (live)
+        private ItemDisplayData[] _trayImagesOld;  // previous tray
 
         private int GetTrayUiIndex(int index) => index;
 
-        private Button[] UIShortedCell;
+        private Button[] UIShortedCell;     // current tray cells
+        private Button[] UIShortedCellOld;  // previous tray cells
+
         private void initTrayMap()
         {
             rows = InforTeaching.Instance.TrayRows;
             cols = InforTeaching.Instance.TrayColumns;
             totaltraymap = rows * cols;
+
             _trayImages = new ItemDisplayData[totaltraymap];
-            UIShortedCell = new Button[totaltraymap];
-            groupboxtraymap.Controls.Clear();
+            _trayImagesOld = new ItemDisplayData[totaltraymap];
+
+            // Build the current (live) grid and the previous-tray grid with the same layout.
+            UIShortedCell = BuildTrayGrid(groupboxtraymap, _trayImages);
+            UIShortedCellOld = BuildTrayGrid(groupboxtraymapold, _trayImagesOld);
+
+            MSystem.m_pYoloManager.OnItemInspected -= YoloManager_OnItemInspected;
+            MSystem.m_pYoloManager.OnItemInspected += YoloManager_OnItemInspected;
+
+        }
+
+        /// <summary>
+        /// Builds a tray grid of buttons inside <paramref name="box"/>. Clicking a cell shows the
+        /// stored images from <paramref name="imageStore"/> on the two preview picture boxes.
+        /// Returns the button array indexed by (displayNumber - 1).
+        /// </summary>
+        private Button[] BuildTrayGrid(GroupBox box, ItemDisplayData[] imageStore)
+        {
+            Button[] cells = new Button[totaltraymap];
+            box.Controls.Clear();
+
             int padding = 3;
-            Rectangle safeArea = groupboxtraymap.DisplayRectangle;
+            Rectangle safeArea = box.DisplayRectangle;
 
-            int cellWidth = (safeArea.Width - (InforTeaching.Instance.TrayColumns + 1) * padding) / InforTeaching.Instance.TrayColumns;
-            int cellHeight = (safeArea.Height - (InforTeaching.Instance.TrayRows + 1) * padding) / InforTeaching.Instance.TrayRows;
-
-
-            //for (int i = 0; i < totaltraymap; i++)
-            //{
-            //    int uiIndex = GetTrayUiIndex(i);
-
-            //    Button btn = new Button();
-            //    btn.Text = (i + 1).ToString();
-            //    btn.BackColor = Color.Gray;
-            //    btn.ForeColor = Color.White;
-            //    btn.FlatStyle = FlatStyle.Flat;
-            //    btn.Margin = new Padding(0);
-
-            //    int uiRow = uiIndex / rows;
-            //    int uiCol = uiIndex % cols;
-
-            //    btn.Size = new Size(cellWidth, cellHeight);
-            //    btn.Location = new Point(
-            //                safeArea.X + padding + uiCol * (cellWidth + padding),
-            //                safeArea.Y + padding + uiRow * (cellHeight + padding)
-            //            );
-
-            //    int capturedIndex = i;
-
-            //    btn.Click += (s, e) => {
-            //        var data = _trayImages[capturedIndex];
-
-            //        if (data != null)
-            //        {
-            //            Bitmap clone0 = data.Cam0Image != null ? new Bitmap(data.Cam0Image) : null;
-            //            Bitmap clone1 = data.Cam1Image != null ? new Bitmap(data.Cam1Image) : null;
-
-            //            UpdateCameraImageResult(pictureBox1, clone0);
-            //            UpdateCameraImageResult(pictureBox2, clone1);
-            //        }
-            //    };
-
+            int cellWidth = (safeArea.Width - (cols + 1) * padding) / cols;
+            int cellHeight = (safeArea.Height - (rows + 1) * padding) / rows;
 
             for (int i = 0; i < totaltraymap; i++)
             {
@@ -523,7 +513,6 @@ namespace MLCCInspectionMC
                 int reverseRow = (rows - 1) - row;
 
                 int displayNumber;
-
                 if (reverseRow % 2 == 0)
                 {
                     displayNumber = reverseRow * cols + (cols - col);
@@ -551,11 +540,10 @@ namespace MLCCInspectionMC
                     safeArea.Y + padding + uiRow * (cellHeight + padding)
                 );
 
-                int capturedIndex = displayNumber;
-                //displayNumberMap[i] = displayNumber;
+                int capturedIndex = displayNumber - 1;
                 btn.Click += (s, e) =>
                 {
-                    var data = _trayImages[displayNumber - 1];
+                    var data = imageStore[capturedIndex];
 
                     if (data != null)
                     {
@@ -567,17 +555,12 @@ namespace MLCCInspectionMC
                     }
                 };
 
-                groupboxtraymap.Controls.Add(btn);
-                UIShortedCell[uiIndex] = btn;
+                box.Controls.Add(btn);
+                cells[uiIndex] = btn;
             }
 
-            MSystem.m_pYoloManager.OnItemInspected -= YoloManager_OnItemInspected;
-            MSystem.m_pYoloManager.OnItemInspected += YoloManager_OnItemInspected;
+            return cells;
         }
-
-        //groupboxtraymap.Controls.Add(btn);
-        //    UIShortedCell[uiIndex] = btn;
-        //}
 
         
 
@@ -623,9 +606,18 @@ namespace MLCCInspectionMC
 
             for (int i = 0; i < totaltraymap; i++)
             {
-                _trayImages[i]?.Dispose();
+                // Promote current tray -> old: transfer image ownership (do NOT dispose current).
+                _trayImagesOld[i]?.Dispose();
+                _trayImagesOld[i] = _trayImages[i];
                 _trayImages[i] = null;
 
+                // Copy cell color current -> old.
+                if (UIShortedCellOld[i] != null && UIShortedCell[i] != null)
+                {
+                    UIShortedCellOld[i].BackColor = UIShortedCell[i].BackColor;
+                }
+
+                // Reset current cell to empty/gray.
                 if (UIShortedCell[i] != null)
                 {
                     UIShortedCell[i].BackColor = Color.Gray;
@@ -652,6 +644,8 @@ namespace MLCCInspectionMC
 
             MSystem.m_pYoloManager.sendEvent(currentindextest, isItemOK, drawn0, drawn1);
             currentindextest++;
+           // ResetTrayMap();
+
         }
 
 

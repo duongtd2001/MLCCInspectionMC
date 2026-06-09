@@ -30,8 +30,19 @@ namespace MLCCInspectionMC
 
         public int COUNT_MAX;
 
+        // ===================== TEMP – AUTO START KHÔNG CẦN 2 NÚT VẬT LÝ =====================
+        // Mục đích: đang chạy qua UltraView nên không bấm được 2 nút IN_START_SW.
+        // Bật cờ này = máy tự quét tray ngay khi đã về vị trí tray out (bỏ qua IsStartSW()).
+        // Dùng để test groupboxtraymap / groupboxtraymapold. XÓA hoặc đặt = false khi test xong.
+        public bool TEMP_AUTO_START_NO_SW = false;
+        // Bật = chạy XONG 1 tray thì tự STOP, muốn quét tray kế tiếp phải nhấn Start lại.
+        // Tắt = chạy liền một mạch (hết tray này tự sang tray khác khi còn RUN).
+        public bool TEMP_RUN_ONE_TRAY_THEN_STOP = false;
+        // ===================================================================================
+
         #endregion
         /******************************************************/
+
         #region Define STEP Run
 
         const int STEP_WAIT = 100;
@@ -142,6 +153,22 @@ namespace MLCCInspectionMC
                     }
                     break;
                 case STEP_WAIT + 100:
+                    // ===================== TEMP – AUTO START (BEGIN) =====================
+                    // Tự kích hoạt quét tray mà KHÔNG cần 2 nút vật lý IN_START_SW.
+                    // Chạy "liền một mạch": quét xong 1 tray -> về tray out -> tự quét tray kế tiếp.
+                    // Để bỏ: đặt TEMP_AUTO_START_NO_SW = false, hoặc xóa nguyên block giữa BEGIN/END.
+                    if (TEMP_AUTO_START_NO_SW)
+                    {
+                        index_SW_Start = 0;
+                        m_iTimer.ResetTimer();
+                        m_iTimer.StartTimer();
+                        MSystem.AutoForm.ResetTrayMap();
+                        Thread.Sleep(50);
+                        SetStep(STEP_MOVE_XY);
+                        break;
+                    }
+                    // ===================== TEMP – AUTO START (END) =======================
+
                     if (IsStartSW())
                     {
                         index_SW_Start++;
@@ -223,13 +250,15 @@ namespace MLCCInspectionMC
                     {
                         lock (m_lock)
                         {
-                            //Bitmap clonedBmp = (Bitmap)_camera[0].m_bitmap.Clone();
-                            //Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
+                            Bitmap clonedBmp = (Bitmap)_camera[0].m_bitmap.Clone();
+                            Bitmap clonedBmp1 = (Bitmap)_camera[1].m_bitmap.Clone();
 
                             //Camera 1 = camera x=bottom
                             //Camera 0 = camera y=left
-                            Bitmap clonedBmp = CropBitmap(_camera[0].m_bitmap, 100, 70, 1200, 1090);
-                            Bitmap clonedBmp1 = CropBitmap(_camera[1].m_bitmap, 50, 20, 1100, 1050);
+
+                            //Bitmap clonedBmp = CropBitmap(_camera[0].m_bitmap, 100, 70, 1200, 1090);
+                            //Bitmap clonedBmp1 = CropBitmap(_camera[1].m_bitmap, 50, 20, 1100, 1050);
+
                             // camera 0
                             //RECT_X1 = 150
                             //RECT_Y1 = 200
@@ -256,6 +285,14 @@ namespace MLCCInspectionMC
                     if ((IndexRun + 1) == InforTeaching.Instance.m_dPos.Count)
                     {
                         SetStep(STEP_WAIT);
+                        // ===== TEMP – CHẠY 1 TRAY RỒI DỪNG (xóa khi test xong) =====
+                        // Tray đã quét XONG ở đây -> mới STOP để không cụt giữa chừng.
+                        // Nhấn Start lại để quét tray tiếp theo.
+                        if (TEMP_RUN_ONE_TRAY_THEN_STOP)
+                        {
+                            MSystem.SysStatus = StatusRun.STOP;
+                        }
+                        // ===========================================================
                         break;
                     }
 
